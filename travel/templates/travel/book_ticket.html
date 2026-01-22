@@ -1,0 +1,80 @@
+{% extends './base.html' %}
+{% block title %}Оформление билета{% endblock %}
+{% block content %}
+<div class="mlp-section">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mlp-title text-center">
+                <i class="fas fa-ticket-alt"></i> Оформление билета
+            </h1>
+
+            <!-- Информация о билете -->
+            <div class="mlp-card mb-4">
+                <div class="card-body">
+                    <h4>{{ ticket.departure_city }} → {{ ticket.arrival_city }}</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Тип:</strong> {{ ticket.get_type_display }}</p>
+                            <p><strong>Отправление:</strong> {{ ticket.departure_date|date:"d.m.Y H:i" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Цена:</strong> <span class="rainbow-text h4">{{ ticket.price }} ₽</span></p>
+                            <p><strong>Прибытие:</strong> {{ ticket.arrival_date|date:"d.m.Y H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма оформления -->
+            <div class="mlp-card">
+                <div class="card-body">
+                    <h4 class="mb-4">Данные пассажира</h4>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Имя пассажира *</label>
+                                <input type="text" class="form-control" name="passenger_name"
+                                       value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Фамилия</label>
+                                <input type="text" class="form-control" name="passenger_last_name"
+                                       value="{{ user.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" name="passenger_email"
+                                   value="{{ user.email }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Телефон *</label>
+                            <input type="tel" class="form-control" name="passenger_phone"
+                                   placeholder="+7 (999) 123-45-67" required>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Билет будет отправлен на указанный email
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="mlp-btn btn-lg">
+                                <i class="fas fa-check"></i> Подтвердить покупку
+                            </button>
+                            <a href="{% url 'tickets' ticket.type %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Назад к билетам
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

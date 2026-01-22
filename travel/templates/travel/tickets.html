@@ -1,0 +1,114 @@
+{% extends './base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="mlp-section">
+    <!-- Заголовок и переключение -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mlp-title">
+            {% if ticket_type == 'train' %}
+                <i class="fas fa-train"></i> ЖД билеты
+            {% else %}
+                <i class="fas fa-plane"></i> Авиабилеты
+            {% endif %}
+        </h1>
+
+        {% if not user.is_authenticated %}
+    <div class="alert alert-info mb-4">
+        <i class="fas fa-info-circle"></i> Для покупки билетов необходимо
+        <a href="{% url 'login' %}" class="alert-link">войти</a> или
+        <a href="{% url 'register' %}" class="alert-link">зарегистрироваться</a>
+    </div>
+    {% endif %}
+
+        <div class="btn-group">
+            <a href="/tickets/train/" class="mlp-btn {% if ticket_type == 'train' %}active{% endif %}">
+                <i class="fas fa-train"></i> Поезда
+            </a>
+            <a href="/tickets/air/" class="mlp-btn {% if ticket_type == 'air' %}active{% endif %}">
+                <i class="fas fa-plane"></i> Самолеты
+            </a>
+        </div>
+    </div>
+
+    <!-- Список билетов -->
+    <div class="row">
+        {% for ticket in tickets %}
+        <div class="col-md-6 mb-4">
+            <div class="mlp-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <span class="mlp-badge">
+                                {% if ticket.type == 'train' %}
+                                    <i class="fas fa-train"></i> Поезд
+                                {% else %}
+                                    <i class="fas fa-plane"></i> Самолет
+                                {% endif %}
+                            </span>
+                            <span class="badge bg-success ms-2">
+                                {{ ticket.available_seats }} мест
+                            </span>
+                        </div>
+                        <h3 class="rainbow-text">{{ ticket.price }} ₽</h3>
+                    </div>
+
+                    <h4>{{ ticket.departure_city }} → {{ ticket.arrival_city }}</h4>
+
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Отправление:</strong></p>
+                            <p>{{ ticket.departure_date|date:"d.m.Y H:i" }}</p>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Прибытие:</strong></p>
+                            <p>{{ ticket.arrival_date|date:"d.m.Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <small class="text-muted">
+                            Длительность: {{ ticket.arrival_date|timeuntil:ticket.departure_date }}
+                        </small>
+
+                        {% if user.is_authenticated %}
+                            {% if ticket.available_seats > 0 %}
+                                <a href="{% url 'book_ticket' ticket.id %}" class="mlp-btn">
+                                    <i class="fas fa-shopping-cart"></i> Купить
+                                </a>
+                            {% else %}
+                                <button class="mlp-btn" disabled>
+                                    <i class="fas fa-times"></i> Нет мест
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <a href="/login/?next={{ request.path }}" class="mlp-btn">
+                                <i class="fas fa-sign-in-alt"></i> Войти для покупки
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="mlp-card">
+                <div class="card-body">
+                    <i class="fas fa-ticket-alt fa-3x rainbow-text mb-3"></i>
+                    <h4>Билеты скоро появятся!</h4>
+                    <p>Мы работаем над добавлением маршрутов</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Кнопка "Мои билеты" для авторизованных -->
+    {% if user.is_authenticated %}
+    <div class="text-center mt-5">
+        <a href="{% url 'my_tickets' %}" class="mlp-btn btn-lg">
+            <i class="fas fa-ticket-alt"></i> Мои билеты
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

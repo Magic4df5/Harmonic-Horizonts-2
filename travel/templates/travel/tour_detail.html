@@ -1,0 +1,147 @@
+<!-- templates/travel/tour_detail.html -->
+{% extends 'travel/base.html' %}
+
+{% block title %}{{ tour.title }} - Harmonic Horizons{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Картинка тура -->
+            {% if tour.image %}
+                <img src="{{ tour.image.url }}"
+                     class="img-fluid rounded mb-4"
+                     alt="{{ tour.title }}"
+                     style="max-height: 400px; width: 100%; object-fit: cover;">
+            {% else %}
+                <img src="https://via.placeholder.com/800x400/7B68EE/FFFFFF?text={{ tour.title }}"
+                     class="img-fluid rounded mb-4"
+                     alt="{{ tour.title }}">
+            {% endif %}
+
+            <h1 class="mb-3 rainbow-text">{{ tour.title }}</h1>
+
+            <!-- Бейджи -->
+            <div class="d-flex gap-3 mb-4">
+                <span class="mlp-badge">{{ tour.get_tour_type_display }}</span>
+                <span class="badge bg-success">{{ tour.duration }} дней</span>
+                <span class="badge bg-info">{{ tour.country.name }}</span>
+                {% if tour.is_available %}
+                    <span class="badge bg-success">✅ Доступен</span>
+                {% else %}
+                    <span class="badge bg-danger">❌ Не доступен</span>
+                {% endif %}
+            </div>
+
+            <!-- Цена -->
+            <div class="mb-4 p-3" style="background: linear-gradient(45deg, var(--mlp-purple), var(--mlp-blue)); border-radius: 10px;">
+                <h2 class="text-white mb-0">💰 {{ tour.price }} ₽</h2>
+                <small class="text-white-50">за весь тур</small>
+            </div>
+
+            <!-- Описание -->
+            <h4><i class="fas fa-scroll"></i> Описание тура</h4>
+            <p class="lead">{{ tour.description }}</p>
+
+            <!-- КНОПКА В КОРЗИНУ -->
+            <div class="mt-5">
+                {% if tour.is_available %}
+                    <form method="post" action="{% url 'add_to_cart' tour.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_type" value="tour">
+                        <button type="submit" class="btn btn-success btn-lg w-100" style="padding: 15px; font-size: 18px;">
+                            <i class="fas fa-shopping-cart"></i> 🛒 Добавить в корзину - {{ tour.price }} ₽
+                        </button>
+                    </form>
+
+                    <!-- Сообщение для отладки -->
+                    <div class="alert alert-info mt-3">
+                        <small>
+                            <i class="fas fa-info-circle"></i> После нажатия кнопки вас должно перенаправить обратно на эту страницу
+                        </small>
+                    </div>
+                {% else %}
+                    <button class="btn btn-secondary btn-lg w-100" disabled>
+                        ❌ Тур временно не доступен
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Боковая панель с деталями -->
+        <div class="col-md-4">
+            <div class="mlp-card sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-info-circle"></i> Детали тура</h5>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="fas fa-flag"></i> <strong>Страна:</strong> {{ tour.country.name }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-calendar"></i> <strong>Длительность:</strong> {{ tour.duration }} дней
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-tag"></i> <strong>Тип тура:</strong> {{ tour.get_tour_type_display }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-map-marker-alt"></i> <strong>Направление:</strong> {{ tour.country.name }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-star"></i> <strong>Рейтинг:</strong>
+                            {% if tour.review_set.all %}
+                                {{ tour.review_set.all.0.rating }}/5
+                            {% else %}
+                                Нет отзывов
+                            {% endif %}
+                        </li>
+                    </ul>
+
+                    <hr>
+
+                    <!-- Быстрые ссылки -->
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'tour_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Все туры
+                        </a>
+                        <a href="{% url 'cart_view' %}" class="btn btn-outline-success">
+                            <i class="fas fa-shopping-cart"></i> Перейти в корзину
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home"></i> На главную
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript для отладки -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 Страница тура загружена: {{ tour.title }}');
+
+    // Отслеживаем отправку формы
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log('🔄 Отправка формы добавления в корзину...');
+            console.log('ID тура: {{ tour.id }}');
+            console.log('Название: {{ tour.title }}');
+
+            // Добавляем задержку для визуальной обратной связи
+            const button = form.querySelector('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Добавляем...';
+            button.disabled = true;
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 1500);
+        });
+    }
+});
+</script>
+{% endblock %}

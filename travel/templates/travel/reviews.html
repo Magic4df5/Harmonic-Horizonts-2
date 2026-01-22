@@ -1,0 +1,81 @@
+{% extends 'travel/base.html' %}
+{% block title %}Отзывы о волшебстве{% endblock %}
+{% block content %}
+<div class="mlp-section">
+    <h1 class="mlp-title"><i class="fas fa-star"></i> Отзывы о наших приключениях</h1>
+
+    {% if user.is_authenticated %}
+    <div class="mlp-card p-4 mb-4">
+        <h4><i class="fas fa-pen"></i> Добавить отзыв</h4>
+        <form method="POST" action="{% url 'add_review' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Ваш отзыв</label>
+                <textarea class="form-control" name="text" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Рейтинг</label>
+                <select class="form-control" name="rating">
+                    <option value="5">⭐⭐⭐⭐⭐ Отлично</option>
+                    <option value="4">⭐⭐⭐⭐ Хорошо</option>
+                    <option value="3">⭐⭐⭐ Нормально</option>
+                    <option value="2">⭐⭐ Плохо</option>
+                    <option value="1">⭐ Ужасно</option>
+                </select>
+            </div>
+            <input type="hidden" name="tour" value="1"> <!-- ID тура -->
+            <button type="submit" class="mlp-btn">
+                <i class="fas fa-paper-plane"></i> Опубликовать отзыв
+            </button>
+        </form>
+    </div>
+    {% else %}
+    <div class="alert alert-info mb-4">
+        <i class="fas fa-info-circle"></i> Для добавления отзыва необходимо
+        <a href="{% url 'login' %}" class="alert-link">войти</a> или
+        <a href="{% url 'register' %}" class="alert-link">зарегистрироваться</a>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        {% for review in reviews %}
+        <div class="col-md-6 mb-4">
+            <div class="mlp-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                             style="width: 50px; height: 50px;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mb-0">{{ review.author }}</h5>
+                            <div class="text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ review.text }}</p>
+                    <small class="text-muted">Тур: {{ review.tour.title }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="mlp-card">
+                <div class="card-body">
+                    <i class="fas fa-comments fa-3x rainbow-text mb-3"></i>
+                    <h4>Ваш отзыв может быть первым!</h4>
+                    <p>Отправьтесь в приключение и поделитесь впечатлениями</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

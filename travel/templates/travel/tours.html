@@ -1,0 +1,57 @@
+{% extends 'travel/base.html' %}
+{% block title %}Волшебные туры{% endblock %}
+{% block content %}
+<div class="mlp-section">
+    <h1 class="mlp-title"><i class="fas fa-map-marked-alt"></i> Наши волшебные туры</h1>
+
+    <div class="row">
+        {% for tour in tours %}
+        <div class="col-md-4 mb-4">
+            <div class="mlp-card h-100">
+                <!-- ДОБАВЛЕНО: КАРТИНКА ТУРА -->
+                {% if tour.image %}
+                    <img src="{{ tour.image.url }}"
+                         class="card-img-top"
+                         alt="{{ tour.title }}"
+                         style="height: 200px; object-fit: cover; border-radius: 15px 15px 0 0;">
+                {% else %}
+                    <img src="https://via.placeholder.com/400x200/7B68EE/FFFFFF?text=Harmonic+Horizons"
+                         class="card-img-top"
+                         alt="Изображение тура"
+                         style="height: 200px; object-fit: cover; border-radius: 15px 15px 0 0;">
+                {% endif %}
+
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="mlp-badge">{{ tour.get_tour_type_display }}</span>
+                        <span class="badge bg-warning">🔥</span>
+                    </div>
+                    <h4 class="card-title">{{ tour.title }}</h4>
+                    <p class="card-text">{{ tour.description|truncatewords:20 }}</p>
+
+                    <div class="mt-3">
+                        <p><i class="fas fa-coins"></i> <strong class="rainbow-text">{{ tour.price }} ₽</strong></p>
+                        <p><i class="fas fa-calendar-alt"></i> {{ tour.duration }} дней</p>
+                        <p><i class="fas fa-globe-americas"></i> {{ tour.country.name }}</p>
+                    </div>
+
+                    <a href="{% url 'tour_detail' tour.pk %}" class="mlp-btn w-100 mt-3">
+                        <i class="fas fa-magic"></i> Выбрать это приключение
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="mlp-card">
+                <div class="card-body">
+                    <i class="fas fa-suitcase-rolling fa-3x rainbow-text mb-3"></i>
+                    <h4>Туры в разработке!</h4>
+                    <p>Скоро мы предложим вам удивительные приключения</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

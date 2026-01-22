@@ -1,0 +1,93 @@
+﻿{% extends 'travel/base.html' %}
+{% block title %}Гармония путешествий{% endblock %}
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="mlp-title display-4">Добро пожаловать в мир гармонии!</h1>
+    <p class="lead">Откройте для себя волшебство путешествий с Harmonic Horizonts</p>
+</div>
+
+<!-- Герой-секция -->
+<div class="mlp-section text-center">
+    <div class="row align-items-center">
+        <div class="col-lg-8 mx-auto">
+            <div class="mb-4">
+                <i class="fas fa-rainbow fa-3x rainbow-text"></i>
+                <i class="fas fa-star fa-3x ml-3" style="color: var(--mlp-yellow);"></i>
+                <i class="fas fa-magic fa-3x ml-3" style="color: var(--mlp-purple);"></i>
+            </div>
+            <h2 class="rainbow-text">Ваши приключения начинаются здесь!</h2>
+            <p class="mb-4">Мы создаем путешествия, которые приносят радость и вдохновение,
+            как в волшебных историях о дружбе и гармонии.</p>
+            <a href="/tours/" class="mlp-btn btn-lg">Найти своё приключение</a>
+        </div>
+    </div>
+</div>
+
+<!-- Новости -->
+<div class="mlp-section">
+    <h2 class="mlp-title"><i class="fas fa-newspaper"></i> Последние новости</h2>
+    <div class="row">
+        {% for item in news %}
+        <div class="col-md-4 mb-4">
+            <div class="mlp-card h-100">
+                <div class="card-body">
+                    <span class="mlp-badge mb-2">Новость</span>
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text">{{ item.content|truncatewords:20 }}</p>
+                    <small class="text-muted">{{ item.created_at|date:"d.m.Y" }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>Скоро появятся новости о наших волшебных приключениях!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Популярные туры -->
+<div class="mlp-section">
+    <h2 class="mlp-title"><i class="fas fa-crown"></i> Волшебные направления</h2>
+    <div class="row">
+        {% for tour in tours %}
+        <div class="col-md-4 mb-4">
+            <div class="mlp-card h-100">
+                <div class="card-body">
+                    <span class="mlp-badge">{{ tour.get_tour_type_display }}</span>
+                    <h5 class="card-title mt-2">{{ tour.title }}</h5>
+                    <p class="card-text">{{ tour.description|truncatewords:15 }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="h5 rainbow-text">{{ tour.price }} ₽</span>
+                        <a href="{% url 'tour_detail' tour.pk %}" class="mlp-btn">Подробнее</a>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <small><i class="fas fa-globe-americas"></i> {{ tour.country.name }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>Волшебные туры скоро появятся!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Раннее бронирование -->
+<div class="mlp-section" id="early-booking">
+    <h2 class="mlp-title"><i class="fas fa-gem"></i> Раннее бронирование</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="mlp-card">
+                <div class="card-body text-center">
+                    <h4 class="rainbow-text mb-3">Забронируй волшебство заранее!</h4>
+                    <p class="mb-4">Получи скидку до 30% и гарантированное место в лучших отелях</p>
+                    <a href="/contacts/" class="mlp-btn btn-lg">Забронировать приключение</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

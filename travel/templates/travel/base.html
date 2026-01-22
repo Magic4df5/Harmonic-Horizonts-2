@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonic Horizonts - {% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Comic+Neue:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --mlp-purple: #7B68EE;
+            --mlp-pink: #FF69B4;
+            --mlp-blue: #00BFFF;
+            --mlp-yellow: #FFD700;
+            --mlp-orange: #FF8C00;
+            --mlp-cyan: #00CED1;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 100%);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        /* Логотип в стиле MLP */
+        .mlp-brand {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7, #FF9A8B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            padding-top: 15px;
+        }
+
+        /* Навигация в стиле MLP */
+        .mlp-navbar {
+            background: linear-gradient(90deg, var(--mlp-purple), var(--mlp-blue));
+            font-family: 'Comic Neue', cursive;
+            box-shadow: 0 4px 20px rgba(123, 104, 238, 0.3);
+        }
+
+        .mlp-navbar {
+             background: url('https://tlum.ru/uploads/e321135c7be0b77efc17ec8c7f2d3c21bcf84a6f25c2148c48c9a2a581d4326f.jpeg') no-repeat center center;
+             background-size: cover;
+             position: relative;
+        }
+
+        .mlp-navbar:before {
+             content: '';
+             position: absolute;
+             top: 0;
+             left: 0;
+             right: 0;
+             bottom: 0;
+             background: linear-gradient(90deg, rgba(123, 104, 238, 0.85), rgba(0, 191, 255, 0.85));
+             z-index: 1;
+        }
+
+        .mlp-navbar > .container {
+             position: relative;
+             z-index: 2;
+        }
+
+        .mlp-nav-link {
+            color: white !important;
+            font-weight: 600;
+            padding: 10px 20px !important;
+            border-radius: 25px;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+
+        .mlp-nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255,255,255,0.2);
+        }
+
+        /* Кнопки входа/регистрации */
+        .auth-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white !important;
+            padding: 8px 20px !important;
+            border-radius: 25px;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+
+        .auth-btn:hover {
+            background: white;
+            color: var(--mlp-purple) !important;
+            transform: scale(1.05);
+        }
+
+        /* Карточки в стиле MLP */
+        .mlp-card {
+            border: none;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 8px 25px rgba(123, 104, 238, 0.15);
+            transition: all 0.3s;
+            overflow: hidden;
+            border-top: 4px solid;
+            border-image: linear-gradient(90deg, var(--mlp-purple), var(--mlp-pink)) 1;
+        }
+
+        .mlp-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(123, 104, 238, 0.25);
+        }
+
+        /* Заголовки в стиле MLP */
+        .mlp-title {
+            font-family: 'Comic Neue', cursive;
+            color: var(--mlp-purple);
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .mlp-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--mlp-purple), var(--mlp-pink), var(--mlp-blue));
+            border-radius: 2px;
+        }
+
+        /* Кнопки в стиле MLP */
+        .mlp-btn {
+            background: linear-gradient(45deg, var(--mlp-purple), var(--mlp-blue));
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-family: 'Comic Neue', cursive;
+            transition: all 0.3s;
+        }
+
+        .mlp-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(123, 104, 238, 0.4);
+            background: linear-gradient(45deg, var(--mlp-blue), var(--mlp-purple));
+        }
+
+        /* Секции */
+        .mlp-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        /* Иконки */
+        .mlp-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            color: var(--mlp-purple);
+        }
+
+        /* Футер */
+        .mlp-footer {
+            background: linear-gradient(90deg, var(--mlp-purple), var(--mlp-blue));
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        /* Цветные метки */
+        .mlp-badge {
+            background: linear-gradient(45deg, var(--mlp-pink), var(--mlp-purple));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Rainbow текст */
+        .rainbow-text {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53, #FFD166, #06D6A0, #118AB2, #073B4C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        /* Стиль для визовой страницы */
+        .visa-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+            border-left: 5px solid var(--mlp-purple);
+        }
+
+        .visa-icon {
+            font-size: 2rem;
+            color: var(--mlp-purple);
+        }
+
+@keyframes subtle-bounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-3px) rotate(5deg); }
+}
+
+/* 2. Изящные разделители */
+.section-divider {
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--mlp-pink),
+        var(--mlp-purple),
+        var(--mlp-blue),
+        transparent
+    );
+    margin: 40px auto;
+    width: 80%;
+    max-width: 500px;
+}
+
+/* 3. Карточки с мягким свечением */
+.enhanced-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.enhanced-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg,
+        var(--mlp-purple),
+        var(--mlp-pink),
+        var(--mlp-blue)
+    );
+    z-index: -1;
+    border-radius: 22px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.enhanced-card:hover::before {
+    opacity: 0.3;
+}
+
+/* 4. Кнопки с градиентным бордером */
+.gradient-btn {
+    background: white;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+}
+
+.gradient-btn::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--mlp-purple), var(--mlp-pink));
+    border-radius: 25px;
+    z-index: -1;
+}
+
+/* 5. Анимация для иконок в навигации */
+.nav-link i {
+    transition: all 0.3s;
+}
+
+.nav-link:hover i {
+    transform: scale(1.2);
+    color: var(--mlp-yellow) !important;
+}
+
+/* 6. Элегантный фон для секций */
+.enhanced-section {
+    background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+    border: 1px solid rgba(147, 112, 219, 0.1);
+}
+
+/* 7. Украшение для футера */
+.footer-decoration {
+    position: relative;
+}
+
+.footer-decoration::before {
+    content: '✨ ✨ ✨';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 24px;
+    color: white;
+    opacity: 0.7;
+}
+
+        /* 8. Стили для падающих снежинок */
+    .snowflake {
+        position: fixed;
+        top: -10px;
+        color: #87CEEB; /* Голубой цвет */
+        font-size: 20px;
+        text-shadow: 0 0 8px rgba(135, 206, 235, 0.7);
+        user-select: none;
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.8;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes snow-fall {
+        0% {
+            transform: translateY(-20px) rotate(0deg) translateX(0);
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg) translateX(50px);
+        }
+    }
+
+    @keyframes snow-fall-slow {
+        0% {
+            transform: translateY(-20px) rotate(0deg) translateX(0);
+        }
+        100% {
+            transform: translateY(100vh) rotate(180deg) translateX(-30px);
+        }
+    }
+
+.mlp-brand {
+    position: relative;
+}
+
+.hat-over-h::before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 4%;
+    transform: translateX(-50%) rotate(-10deg);
+    width: 100px; /* размер картинки */
+    height: 100px;
+    background-image: url('/static/images/колпак.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: hatFloat 3s ease-in-out infinite;
+    z-index: 10000;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+}
+
+@keyframes hatFloat {
+    0%, 100% { transform: translateX(-50%) rotate(-10deg) translateY(0); }
+    50% { transform: translateX(-50%) rotate(-5deg) translateY(-10px); }
+}
+
+/* 10. Стеклянный вдавленный эффект */
+.mlp-nav-link.active {
+    background: linear-gradient(145deg, rgba(0,0,0,0.15), rgba(255,255,255,0.05)) !important;
+    color: white !important;
+    box-shadow: inset 3px 3px 6px rgba(0,0,0,0.2),
+                inset -3px -3px 6px rgba(255,255,255,0.1) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    transform: translateY(1px);
+}
+.mlp-nav-link.active i { color: #FFD700 !important; transform: scale(1.1); }
+
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg mlp-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand mlp-brand" href="/">
+                <span class="hat-over-h">H</span>armonic Horizonts
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link mlp-nav-link" href="/"><i class="fas fa-home mlp-icon"></i> Главная</a></li>
+                    <li class="nav-item"><a class="nav-link mlp-nav-link" href="/countries/"><i class="fas fa-globe-americas mlp-icon"></i> Страны</a></li>
+                    <li class="nav-item"><a class="nav-link mlp-nav-link" href="/tours/"><i class="fas fa-map-marked-alt mlp-icon"></i> Туры</a></li>
+                    <li class="nav-item"><a class="nav-link mlp-nav-link" href="/reviews/"><i class="fas fa-star mlp-icon"></i> Отзывы</a></li>
+                    <!-- ДОБАВЛЕНА ВКЛАДКА ВИЗЫ -->
+                    <li class="nav-item"><a class="nav-link mlp-nav-link" href="/visas/"><i class="fas fa-passport mlp-icon"></i> Визы</a></li>
+                    <li class="nav-item">
+    <a class="nav-link mlp-nav-link" href="/tickets/train/">
+        <i class="fas fa-train"></i> ЖД билеты
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link mlp-nav-link" href="/tickets/air/">
+        <i class="fas fa-plane"></i> Авиабилеты
+    </a>
+</li>
+                    <li class="nav-item"><a class="nav-link mlp-nav-link" href="/contacts/"><i class="fas fa-envelope mlp-icon"></i> Контакты</a></li>
+                </ul>
+
+                <!-- ДОБАВЛЕНЫ КНОПКИ ВОЙТИ/ЗАРЕГИСТРИРОВАТЬСЯ -->
+                <div class="navbar-nav">
+    {% if user.is_authenticated %}
+    <li class="nav-item dropdown">
+        <a class="nav-link auth-btn dropdown-toggle" href="#" role="button"
+           data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user-circle"></i> {{ user.username }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+                <a class="dropdown-item" href="{% url 'my_tickets' %}">
+                    <i class="fas fa-ticket-alt"></i> Мои билеты
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item" href="{% url 'logout' %}">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </a>
+            </li>
+        </ul>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link auth-btn" href="{% url 'login' %}">
+            <i class="fas fa-sign-in-alt"></i> Войти
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link auth-btn" href="{% url 'register' %}">
+            <i class="fas fa-user-plus"></i> Регистрация
+        </a>
+    </li>
+    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+<!-- Изящный разделитель -->
+<div class="section-divider"></div>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Футер -->
+    <footer class="mlp-footer">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fas fa-horse-head"></i> Harmonic Horizonts</h5>
+                    <p>Путешествия, наполненные гармонией и радостью!</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Наши услуги</h5>
+                    <p>Туры • Визы • Консультации • Бронирование</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Контакты</h5>
+                    <p><i class="fas fa-envelope"></i> info@harmonichorizonts.com</p>
+                    <p><i class="fas fa-phone"></i> +7 (913) 934-13-37
+                    </p>
+                </div>
+            </div>
+            <hr style="background: rgba(255,255,255,0.3);">
+            <p class="mb-0">&copy; 2025 Harmonic Horizonts. Все права защищены 🌈✨</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎪 Harmonic Horizonts loaded!');
+
+            // Восстанавливаем нормальную работу ссылок
+            const navLinks = document.querySelectorAll('.mlp-nav-link');
+
+            // Обновление активной вкладки
+            const currentPath = window.location.pathname;
+
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+
+                // Убираем активность
+                link.classList.remove('active');
+
+                // Для главной
+                if (linkPath === '/' && (currentPath === '/' || currentPath === '')) {
+                    link.classList.add('active');
+                }
+                // Для остальных
+                else if (linkPath !== '/' && currentPath.startsWith(linkPath)) {
+                    link.classList.add('active');
+                }
+
+                // Добавляем плавную анимацию при клике
+                link.addEventListener('click', function() {
+                    // Визуальная обратная связь
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            // Анимация для кнопок аутентификации
+            const authButtons = document.querySelectorAll('.auth-btn');
+            authButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            // Добавляем анимацию для карточек при скролле
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Наблюдаем за карточками
+            document.querySelectorAll('.mlp-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+<div id="snowflakes-container" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9997;"></div>
+<script>
+    // Проверка: скрипт загружается
+    console.log('❄️ Snow script starting...');
+
+    // Функция создания одной снежинки
+    function createSnowflake() {
+        const container = document.getElementById('snowflakes-container');
+        if (!container) {
+            console.error('Snow container not found!');
+            return;
+        }
+
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.innerHTML = '❄';
+
+        // Случайная позиция
+        snowflake.style.left = Math.random() * 100 + 'vw';
+
+        // Случайный размер
+        const size = Math.random() * 15 + 10; // 10-25px
+        snowflake.style.fontSize = size + 'px';
+
+        // Случайная прозрачность
+        snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+
+        // Случайная анимация
+        const duration = Math.random() * 4 + 6; // 6-10 секунд
+        const animationType = Math.random() > 0.5 ? 'snow-fall' : 'snow-fall-slow';
+        snowflake.style.animation = `${animationType} ${duration}s linear infinite`;
+
+        // Цвет снежинки
+        snowflake.style.color = '#87CEEB';
+        snowflake.style.textShadow = '0 0 5px rgba(135, 206, 235, 0.7)';
+
+        // Добавляем в контейнер
+        container.appendChild(snowflake);
+
+        // Удаляем через время
+        setTimeout(() => {
+            if (snowflake.parentNode) {
+                snowflake.remove();
+            }
+        }, duration * 1000);
+    }
+
+    // Запуск после загрузки страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('❄️ DOM loaded, creating snow...');
+
+        // Создаем 40 начальных снежинок
+        for(let i = 0; i < 40; i++) {
+            setTimeout(() => createSnowflake(), i * 100);
+        }
+
+        // Продолжаем создавать новые
+        setInterval(createSnowflake, 250);
+
+        console.log('❄️ Snowflakes activated!');
+    });
+
+    // Если страница уже загружена
+    if (document.readyState === 'complete') {
+        document.dispatchEvent(new Event('DOMContentLoaded'));
+    }
+    </script>
+
+<script>
+// Простая логика активных вкладок
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.mlp-nav-link');
+
+    console.log('Текущий путь:', currentPath);
+
+    // Правило: главная ТОЛЬКО если path = '/' или пустой
+    const isHomePage = (currentPath === '/' || currentPath === '');
+
+    // Для всех вкладок
+    navLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+
+        // Убираем активность
+        link.classList.remove('active');
+
+        // Для главной - только если мы на главной
+        if (linkPath === '/' && isHomePage) {
+            link.classList.add('active');
+            console.log('Активна главная');
+        }
+        // Для остальных - если path начинается с linkPath
+        else if (linkPath !== '/' && currentPath.startsWith(linkPath)) {
+            link.classList.add('active');
+            console.log('Активна:', linkPath);
+        }
+    });
+
+    // Обработка кликов
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Для заглушек
+            if (this.href.includes('/login/') || this.href.includes('/register/')) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                setTimeout(() => {
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    // Переопределяем активную по URL
+                    const current = window.location.pathname;
+                    const isHome = (current === '/' || current === '');
+
+                    navLinks.forEach(l => {
+                        const href = l.getAttribute('href');
+                        if (href === '/' && isHome) {
+                            l.classList.add('active');
+                        } else if (href !== '/' && current.startsWith(href)) {
+                            l.classList.add('active');
+                        }
+                    });
+                }, 800);
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

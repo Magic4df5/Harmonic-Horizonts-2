@@ -1,0 +1,438 @@
+{% extends './base.html' %}
+{% load static %}
+{% block title %}Визовая поддержка{% endblock %}
+{% block content %}
+<div class="mlp-section">
+    <h1 class="mlp-title"><i class="fas fa-passport"></i> Визовая поддержка</h1>
+    <p class="text-center mb-4">Мы поможем оформить визы в любую страну быстро и надежно</p>
+
+    <div class="row">
+        {% for visa in visas %}
+        <div class="col-md-6 mb-4">
+            <div class="mlp-card visa-card enhanced-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="visa-icon me-3">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <div>
+                            <h4 class="rainbow-text">{{ visa.country.name }}</h4>
+                            <p class="mb-0"><strong>Срок:</strong> {{ visa.processing_time }}</p>
+                        </div>
+                    </div>
+
+                    <p><strong>Требования:</strong> {{ visa.requirements|truncatewords:30 }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="h4 rainbow-text">{{ visa.cost }} ₽</span>
+                        <!-- Измененная кнопка с атрибутами для модального окна -->
+                        <button type="button" class="mlp-btn apply-visa-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#applyVisaModal"
+                                data-visa-country="{{ visa.country.name }}"
+                                data-visa-cost="{{ visa.cost }}"
+                                data-visa-id="{{ visa.id }}">
+                            Оформить визу
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="mlp-card">
+                <div class="card-body">
+                    <i class="fas fa-plane fa-3x rainbow-text mb-3"></i>
+                    <h4>Информация о визах скоро появится!</h4>
+                    <p>Мы работаем над добавлением визовой поддержки для всех стран</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Модальное окно оформления визы -->
+<div class="modal fade" id="applyVisaModal" tabindex="-1" aria-labelledby="applyVisaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="applyVisaModalLabel">
+                    <i class="fas fa-passport me-2"></i>Оформление визы
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="visaFormStep1">
+                    <h6 id="selectedVisaInfo" class="text-center mb-4"></h6>
+
+                    <form id="visaApplicationForm">
+                        {% csrf_token %}
+                        <input type="hidden" id="visa_id" name="visa_id">
+
+                        <div class="mb-3">
+                            <label for="full_name" class="form-label">ФИО *</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="passport_number" class="form-label">Номер паспорта *</label>
+                            <input type="text" class="form-control" id="passport_number" name="passport_number" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Телефон *</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="travel_date" class="form-label">Планируемая дата поездки *</label>
+                            <input type="date" class="form-control" id="travel_date" name="travel_date" required>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="agree_terms" required>
+                            <label class="form-check-label" for="agree_terms">
+                                Согласен с обработкой персональных данных
+                            </label>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="visaFormStep2" style="display: none;">
+                    <div class="text-center py-4">
+                        <div class="success-icon mb-3">
+                            <i class="fas fa-check-circle fa-4x text-success"></i>
+                        </div>
+                        <h4 class="rainbow-text">Заявка отправлена!</h4>
+                        <p>Ваша заявка на визу успешно принята.</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <small>Наш специалист свяжется с вами в течение 24 часов для уточнения деталей.</small>
+                        </div>
+                        <div class="mt-4">
+                            <p><strong>Номер заявки:</strong> <span id="applicationNumber" class="badge bg-primary">VIS-{{ "now"|date:"YmdHis" }}</span></p>
+                            <p><small class="text-muted">Сохраните этот номер для отслеживания статуса</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="mlp-btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">Отмена</button>
+                <button type="button" class="mlp-btn" id="submitVisaBtn">Отправить заявку</button>
+                <button type="button" class="mlp-btn" id="closeModalBtn" style="display: none;" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно статуса заявки -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">
+                    <i class="fas fa-history me-2"></i>Статус заявки
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="timeline">
+                    <div class="timeline-item active">
+                        <div class="timeline-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h6>Заявка создана</h6>
+                            <p>Только что</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h6>Проверка документов</h6>
+                            <p>В течение 24 часов</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-passport"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h6>Оформление визы</h6>
+                            <p>3-5 рабочих дней</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h6>Готово</h6>
+                            <p>Виза выдана</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="mlp-btn" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="mlp-btn" id="checkStatusBtn">
+                    <i class="fas fa-sync-alt"></i> Проверить статус
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mlp-section">
+    <h2 class="mlp-title"><i class="fas fa-question-circle"></i> Частые вопросы</h2>
+
+    <div class="accordion" id="visaFAQ">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                    Сколько времени занимает оформление визы?
+                </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#visaFAQ">
+                <div class="accordion-body">
+                    От 3 до 14 рабочих дней в зависимости от страны и типа визы.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                    Какие документы нужны?
+                </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#visaFAQ">
+                <div class="accordion-body">
+                    Паспорт, фотографии, справка с работы, выписка из банка и анкета.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Кнопка для проверки статуса (внизу страницы) -->
+<div class="text-center mt-5">
+    <button type="button" class="mlp-btn" data-bs-toggle="modal" data-bs-target="#statusModal">
+        <i class="fas fa-search"></i> Проверить статус заявки
+    </button>
+</div>
+
+<style>
+/* Стили для timeline статуса */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-item.active .timeline-icon {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+}
+
+.timeline-content {
+    padding-left: 20px;
+}
+
+.timeline h6 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.timeline p {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 0;
+}
+
+/* Анимация успеха */
+.success-icon {
+    animation: bounce 1s;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+/* Стиль для иконки визы */
+.visa-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+/* Улучшенная карточка */
+.enhanced-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.enhanced-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработчик для кнопок "Оформить визу"
+    const applyButtons = document.querySelectorAll('.apply-visa-btn');
+    const applyVisaModal = document.getElementById('applyVisaModal');
+    const selectedVisaInfo = document.getElementById('selectedVisaInfo');
+    const visaIdInput = document.getElementById('visa_id');
+    const submitVisaBtn = document.getElementById('submitVisaBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const visaFormStep1 = document.getElementById('visaFormStep1');
+    const visaFormStep2 = document.getElementById('visaFormStep2');
+
+    // Маска для телефона
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', function(e) {
+        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+        e.target.value = !x[2] ? '+7' + x[1] : '+7 (' + x[2] + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+    });
+
+    // Маска для паспорта
+    const passportInput = document.getElementById('passport_number');
+    passportInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 10) value = value.substring(0, 10);
+        if (value.length > 4) {
+            value = value.substring(0, 4) + ' ' + value.substring(4);
+        }
+        e.target.value = value;
+    });
+
+    // При клике на кнопку "Оформить визу"
+    applyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const country = this.getAttribute('data-visa-country');
+            const cost = this.getAttribute('data-visa-cost');
+            const visaId = this.getAttribute('data-visa-id');
+
+            // Заполняем информацию в модальном окне
+            selectedVisaInfo.innerHTML = `
+                <div class="alert alert-primary">
+                    <i class="fas fa-info-circle"></i>
+                    Вы оформляете визу в <strong>${country}</strong><br>
+                    Стоимость услуги: <strong>${cost} ₽</strong>
+                </div>
+            `;
+
+            // Сохраняем ID визы
+            visaIdInput.value = visaId;
+
+            // Сбрасываем форму
+            document.getElementById('visaApplicationForm').reset();
+            visaFormStep1.style.display = 'block';
+            visaFormStep2.style.display = 'none';
+            submitVisaBtn.style.display = 'block';
+            cancelBtn.style.display = 'block';
+            closeModalBtn.style.display = 'none';
+        });
+    });
+
+    // Отправка заявки
+    submitVisaBtn.addEventListener('click', function() {
+        const form = document.getElementById('visaApplicationForm');
+
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        // Имитация отправки на сервер
+        const formData = new FormData(form);
+        const applicationData = Object.fromEntries(formData.entries());
+
+        // Генерация номера заявки
+        const appNumber = 'VIS-' + new Date().getTime();
+        document.getElementById('applicationNumber').textContent = appNumber;
+
+        // Показываем успех
+        visaFormStep1.style.display = 'none';
+        visaFormStep2.style.display = 'block';
+        submitVisaBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        closeModalBtn.style.display = 'block';
+
+        // Сохраняем в localStorage для демонстрации
+        localStorage.setItem('lastVisaApplication', JSON.stringify({
+            ...applicationData,
+            applicationNumber: appNumber,
+            timestamp: new Date().toISOString(),
+            status: 'pending'
+        }));
+
+        console.log('Заявка отправлена:', applicationData);
+    });
+
+    // Кнопка проверки статуса
+    document.getElementById('checkStatusBtn')?.addEventListener('click', function() {
+        const lastApp = localStorage.getItem('lastVisaApplication');
+        if (lastApp) {
+            const appData = JSON.parse(lastApp);
+            alert(`Статус заявки ${appData.applicationNumber}: \nВ обработке\nНаш специалист свяжется с вами в ближайшее время.`);
+        } else {
+            alert('У вас нет активных заявок. Оформите новую заявку на визу.');
+        }
+    });
+
+    // При закрытии модального окна
+    applyVisaModal.addEventListener('hidden.bs.modal', function () {
+        // Сбрасываем форму
+        document.getElementById('visaApplicationForm').reset();
+        visaFormStep1.style.display = 'block';
+        visaFormStep2.style.display = 'none';
+        submitVisaBtn.style.display = 'block';
+        cancelBtn.style.display = 'block';
+        closeModalBtn.style.display = 'none';
+    });
+});
+</script>
+{% endblock %}

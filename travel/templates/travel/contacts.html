@@ -1,0 +1,71 @@
+{% extends 'travel/base.html' %}
+{% block title %}Свяжитесь с нами{% endblock %}
+{% block content %}
+<div class="mlp-section">
+    <h1 class="mlp-title"><i class="fas fa-envelope"></i> Свяжитесь с Harmonic Horizonts</h1>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="mlp-card h-100">
+                <div class="card-body">
+                    <h4 class="rainbow-text mb-4"><i class="fas fa-info-circle"></i> Наша информация</h4>
+
+                    {% if contact %}
+                    <div class="mb-3">
+                        <h5><i class="fas fa-map-marker-alt mlp-icon"></i> Адрес</h5>
+                        <p>{{ contact.address }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5><i class="fas fa-phone mlp-icon"></i> Телефон</h5>
+                        <p class="h5 rainbow-text">{{ contact.phone }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5><i class="fas fa-envelope mlp-icon"></i> Email</h5>
+                        <p>{{ contact.email }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5><i class="fas fa-clock mlp-icon"></i> Часы работы</h5>
+                        <p>{{ contact.work_hours }}</p>
+                    </div>
+                    {% else %}
+                    <p>Наша цель — не просто продать путёвку, а создать уникальное приключение, которое расширит ваш кругозор, познакомит с новыми культурами и оставит воспоминания ярче радуги!<br>
+                    Часы работы: 8:00-20:00 </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="mlp-card h-100">
+                <div class="card-body">
+                    <h4 class="rainbow-text mb-4"><i class="fas fa-paper-plane"></i> Напишите нам</h4>
+
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Ваше имя</label>
+                            <input type="text" class="form-control" placeholder="Как вас зовут?">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" placeholder="example@mail.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Сообщение</label>
+                            <textarea class="form-control" rows="4" placeholder="Расскажите о своём волшебном путешествии..."></textarea>
+                        </div>
+
+                        <button type="submit" class="mlp-btn w-100">
+                            <i class="fas fa-paper-plane"></i> Отправить сообщение
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

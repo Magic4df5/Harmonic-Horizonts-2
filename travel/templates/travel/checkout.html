@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Оформление заказа</title>
+</head>
+<body>
+    <h1>Оформление заказа</h1>
+
+    {% if cart_items %}
+        <ul>
+        {% for item in cart_items %}
+            <li>{{ item.product.name }} - {{ item.quantity }} шт.</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Корзина пуста</p>
+    {% endif %}
+</body>
+</html>
